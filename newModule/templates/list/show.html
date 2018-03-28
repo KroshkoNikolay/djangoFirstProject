@@ -1,4 +1,5 @@
-<a href="/">main page</a>
+<a href="/">main page</a></br>
+<a href="/list/create">Add new record</a>
 {% if users_list %}
 <table>
     {% for user in users_list %}
@@ -10,6 +11,7 @@
         <td>{{ user.birth_date }}</td>
         <td>{{ user.created_at }}</td>
         <td>{{ user.updated_at }}</td>
+        <td> <a href="/list/{{ user.id }}/edit">Edit user</a></td>
     </tr>
     {% endfor %}
 </table>
