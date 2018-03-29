@@ -21,5 +21,6 @@ from newModule.views import main_index
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('list/', include('newModule.urls')),
+    path('restlist/', include('restModule.urls')),
     path('', main_index)
 ]
