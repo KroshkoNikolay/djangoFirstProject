@@ -8,22 +8,22 @@ ____________________________________________________________________
 REST api framework requests:
 
 - CREATE (POST):
-    - add new item: http://localhost:8000/restlist/ with params:
+    - add new item: http://localhost:8000/restlist/users/ with params:
         - first_name
         - last_name
         - email
         - birth_date
      
 - RETRIEVE (GET):
-    - get whole list: http://localhost:8000/restlist/
-    - get single element: http://localhost:8000/restlist/{{element_id}}/   
+    - get whole list: http://localhost:8000/restlist/users/
+    - get single element: http://localhost:8000/restlist/users/{{element_id}}/   
 
 - UPDATE (PATCH):
-    - update single item: http://localhost:8000/restlist/{{element_id}}/  with params:
+    - update single item: http://localhost:8000/restlist/users/{{element_id}}/  with params:
         - first_name
         - last_name
         - email
         - birth_date
         
 - DELETE (DELETE):
-    - remove single item by item id: http://localhost:8000/restlist/{{element_id}}/
+    - remove single item by item id: http://localhost:8000/restlist/users/{{element_id}}/

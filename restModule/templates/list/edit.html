@@ -1,9 +1,0 @@
-<h1>Edit user</h1>
-<a href="/">main page</a><br>
-<a href="/list">show list</a><br>
-<a href="/list/{{ user_id }}">back to details</a>
-
-<form method="POST">{% csrf_token %}
-    {{ form.as_p }}
-    <button type="submit" >Save</button>
-</form>
