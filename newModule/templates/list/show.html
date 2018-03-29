@@ -2,6 +2,17 @@
 <a href="/list/create">Add new record</a>
 {% if users_list %}
 <table>
+    <tr>
+        <td>Id</td>
+        <td>Name</td>
+        <td>Surname</td>
+        <td>Email</td>
+        <td>Birth date</td>
+        <td>Registration date</td>
+        <td>Last updated</td>
+        <td></td>
+        <td></td>
+    </tr>
     {% for user in users_list %}
     <tr>
         <td><a href="/list/{{ user.id }}/">{{ user.id }}</a></td>
@@ -12,6 +23,7 @@
         <td>{{ user.created_at }}</td>
         <td>{{ user.updated_at }}</td>
         <td> <a href="/list/{{ user.id }}/edit">Edit user</a></td>
+        <td> <a href="/list/{{ user.id }}/delete">Delete user</a></td>
     </tr>
     {% endfor %}
 </table>
