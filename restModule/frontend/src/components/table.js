@@ -2,8 +2,6 @@ import React, { Component } from 'react';
 
 export default class UsersTable extends Component{
     render(){
-        console.log('table');
-        console.log(this.props);
         return (
             <table>
                 {
@@ -13,7 +11,9 @@ export default class UsersTable extends Component{
                             <td>{item.last_name}</td>
                             <td>{item.email}</td>
                             <td>{item.birth_date}</td>
-                            <td></td>
+                            <td>
+                                <button type='button'>Edit</button>
+                            </td>
                             <td></td>
                         </tr>
                     })
