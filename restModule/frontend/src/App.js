@@ -159,7 +159,6 @@ class App extends Component {
     }
 
     removeRecordHandler(id) {
-        console.log(id);
         const self = this;
         fetch('http://localhost:8000/restlist/users/'+ id + '/', {
             method: 'DELETE',

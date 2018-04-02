@@ -4,10 +4,10 @@ export default class Form extends Component{
     constructor(props) {
         super(props);
         this.state = {
-            first_name: this.props.data.first_name || '',
-            last_name: this.props.data.last_name || '',
-            email: this.props.data.email || '',
-            birth_date: this.props.data.birth_date || ''
+            first_name: (this.props.data && this.props.data.first_name ? this.props.data.first_name : ''),
+            last_name: (this.props.data && this.props.data.last_name ? this.props.data.last_name : ''),
+            email: (this.props.data && this.props.data.email ? this.props.data.email : ''),
+            birth_date: (this.props.data && this.props.data.birth_date ? this.props.data.birth_date : '')
         };
     }
 
@@ -22,7 +22,7 @@ export default class Form extends Component{
 
     onSubmit() {
         let data = {};
-        if (this.props.data.id){
+        if (this.props.data && this.props.data.id){
             data = {id: this.props.data.id, form: this.state};
         }
         else {
