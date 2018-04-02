@@ -13,12 +13,15 @@ class App extends Component {
             error: false
         };
         this.retrieveWholeList();
-        this.addRecordHandler = this.addRecordHandler.bind(this)
+        this.addRecordHandler = this.addRecordHandler.bind(this);
+        this.editRecordHandler = this.editRecordHandler.bind(this);
+        this.editUser = this.editUser.bind(this);
+        this.removeRecordHandler = this.removeRecordHandler.bind(this);
     }
 
     retrieveWholeList() {
         const self = this;
-        fetch('http://localhost:8000/restlist/users', {
+        fetch('http://localhost:8000/restlist/users/', {
             method: 'GET',
         })
             .then(function(response) {
@@ -26,7 +29,6 @@ class App extends Component {
                 if(contentType && contentType.includes("application/json")) {
                     return response.json();
                 }
-                // return JSON.parse('[{"id":1,"first_name":"11111111111","last_name":"l1111111111","email":"sgdfgsdfg@dfg.dgh","birth_date":"2005-10-04"},{"id":2,"first_name":"ghdfgvs","last_name":"dfgh","email":"xjo@gmail.comdfg","birth_date":"2018-03-27"},{"id":3,"first_name":"222","last_name":"222","email":"sddff@dfg.fg","birth_date":"1999-05-05"},{"id":4,"first_name":"123","last_name":"erwer","email":"wefsf@sdf.ghj","birth_date":"1990-03-04"},{"id":5,"first_name":"1234","last_name":"1234","email":"asdfa@fs.fgh","birth_date":"2018-03-23"},{"id":6,"first_name":"ghdfgvs","last_name":"dfgh","email":"xjodffossdfdfux@gmail.comdfg","birth_date":"2018-03-27"}]');
                 throw new TypeError("Oops, we haven't got JSON!");
             })
             .then(function(json) {
@@ -45,7 +47,6 @@ class App extends Component {
     }
 
     addNewUser(){
-        console.log('add new');
         this.setState({
             mode: 'newRecord',
         });
@@ -54,8 +55,7 @@ class App extends Component {
 
     addRecordHandler(form) {
         const self = this;
-        console.log(form)
-        fetch('http://localhost:8000/restlist/users', {
+        fetch('http://localhost:8000/restlist/users/', {
             method: 'POST',
             body: JSON.stringify(form),
             headers: new Headers({
@@ -65,19 +65,17 @@ class App extends Component {
             .then(function(response) {
                 const contentType = response.headers.get("content-type");
                 if(contentType && contentType.includes("application/json")) {
-                    const data = response.json().then(function(result) {
+                    response.json().then(function(result) {
                         if (response.ok){
                             return {'status': 'success', data: result}
                         } else {
                             return {'status': 'failed', data: result}
                         }
                     });
-                    return data;
                 }
                 throw new TypeError("Oops, we haven't got JSON!");
             })
             .then(function(json) {
-                console.log(json)
                 if (json.status === 'success') {
                     let list = self.state.usersList;
                     list.push(json.data);
@@ -99,17 +97,113 @@ class App extends Component {
             });
     }
 
-    editRecordHandler(e) {
-        e.preventDefault()
-        // this.setState({
-        //     someVar: someValue
-        // })
+    editUser(id) {
+        if (!id) return;
+        const editData = this.state.usersList.find(function(elem){
+            return elem.id === id;
+        });
+        if (!editData) return;
+        this.setState({
+            mode: 'editRecord',
+            editUserData: editData
+        });
+    }
+
+    editRecordHandler(data) {
+        const self = this;
+        fetch('http://localhost:8000/restlist/users/'+ data.id + '/', {
+            method: 'PATCH',
+            body: JSON.stringify(data.form),
+            headers: new Headers({
+                "Content-Type": "application/json",
+            })
+        })
+            .then(function(response) {
+                const contentType = response.headers.get("content-type");
+                if(contentType && contentType.includes("application/json")) {
+                    response.json().then(function(result) {
+                        if (response.ok){
+                            return {'status': 'success', data: result}
+                        } else {
+                            return {'status': 'failed', data: result}
+                        }
+                    });
+                }
+                throw new TypeError("Oops, we haven't got JSON!");
+            })
+            .then(function(json) {
+                if (json.status === 'success') {
+                    let list = self.state.usersList;
+                    for (let i = 0; i < list.length; i++) {
+                        if (list[i].id === json.data.id) {
+                            list[i] = json.data;
+                            break;
+                        }
+                    }
+                    self.setState({
+                        usersList: list,
+                        error: false,
+                        mode: 'table',
+                    });
+                } else {
+                    self.setState({
+                        error: true,
+                        errorMsg: json.data
+                    });
+                }
+
+            })
+            .catch(function(error) {
+                console.log(error);
+            });
+    }
+
+    removeRecordHandler(id) {
+        console.log(id);
+        const self = this;
+        fetch('http://localhost:8000/restlist/users/'+ id + '/', {
+            method: 'DELETE',
+        })
+            .then(function(response) {
+                const contentType = response.headers.get("content-type");
+                if (response.ok){
+                    return {'status': 'success'}
+                } else {
+                    if(contentType && contentType.includes("application/json")) {
+                        response.json().then(function(result) {
+                            return {'status': 'failed', data: result}
+                        });
+                    }
+                    throw new TypeError("Oops, we haven't got JSON!");
+                }
+            })
+            .then(function(json) {
+                if (json.status === 'success') {
+                    let list = self.state.usersList.filter(function(elem){
+                        return elem.id !== id;
+                    });
+                    self.setState({
+                        usersList: list,
+                        error: false,
+                        mode: 'table',
+                    });
+                } else {
+                    self.setState({
+                        error: true,
+                        errorMsg: json.data
+                    });
+                }
+
+            })
+            .catch(function(error) {
+                console.log(error);
+            });
     }
 
     render() {
         const table = (state) => {
             if (state.mode === 'table' && state.usersList) {
-                return <UsersTable list={state.usersList}/>
+                return <UsersTable list={state.usersList} itemEditHandler={this.editUser} removeRecordHandler={this.removeRecordHandler}/>
             }
             return null;
         };
@@ -118,7 +212,7 @@ class App extends Component {
             if (this.state.mode === 'newRecord')
                 return <Form handler = {this.addRecordHandler}/>;
             else if (this.state.mode === 'editRecord')
-                return <Form handler = {this.editRecordHandler} data={''}/>;
+                return <Form handler = {this.editRecordHandler} data={this.state.editUserData}/>;
             else
                 return null
 

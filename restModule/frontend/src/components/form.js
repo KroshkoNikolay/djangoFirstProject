@@ -4,11 +4,11 @@ export default class Form extends Component{
     constructor(props) {
         super(props);
         this.state = {
-            first_name: this.props.first_name || '',
-            last_name: this.props.last_name || '',
-            email: this.props.email || '',
-            birth_date: this.props.birth_date || ''
-        }
+            first_name: this.props.data.first_name || '',
+            last_name: this.props.data.last_name || '',
+            email: this.props.data.email || '',
+            birth_date: this.props.data.birth_date || ''
+        };
     }
 
     handleChange(inputId, e) {
@@ -21,7 +21,14 @@ export default class Form extends Component{
     }
 
     onSubmit() {
-        this.props.handler(this.state);
+        let data = {};
+        if (this.props.data.id){
+            data = {id: this.props.data.id, form: this.state};
+        }
+        else {
+            data = this.state;
+        }
+        this.props.handler(data);
     }
 
 
